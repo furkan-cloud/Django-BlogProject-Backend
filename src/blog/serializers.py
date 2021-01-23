@@ -17,23 +17,23 @@ class PostSerializer(serializers.ModelSerializer):
             # "postview_count"
         )
 
-# class CommentSerializer(serializers.ModelSerializer):
-#     # content = serializers.CharField()
-#     class Meta:
-#         model = Comment
-#         fields = (
-#             "content",
-#             "user",
-#             "post",
-#             "time_stamp"
-#         )
+class CommentSerializer(serializers.ModelSerializer):
+    # content = serializers.CharField()
+    class Meta:
+        model = Comment
+        fields = (
+            "content",
+            "user",
+            "post",
+            "time_stamp"
+        )
     
-#     def create(self, validated_data):
-#         content = serializers.CharField()
-#         # content = validated_data["content"]
-#         return content
+    def create(self, validated_data):
+        content = serializers.CharField()
+        # content = validated_data["content"]
+        return content
 
-class CommentSerializer
+# class CommentSerializer
     
 
 
@@ -84,3 +84,4 @@ class PostUpdateDeleteSerializer(serializers.ModelSerializer):
             "category",
         )
         # lookup_fields = ['title']
+
