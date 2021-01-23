@@ -1,6 +1,10 @@
-from django.contrib import admin
 from django.urls import path
+from .views import BlogList, PostDetail, PostCreate, PostUpdate, CommentCreate
 
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-# ]
+urlpatterns = [
+    path('', BlogList.as_view(), name="bloglist"),
+    path('post/<title>', PostDetail.as_view(), name="postdetail"),
+    path('create', PostCreate.as_view(), name="postcreate"),
+    path('update/<int:id>', PostUpdate.as_view(), name="postupdate"),
+    path('comment', CommentCreate.as_view(), name="commentcreate"),
+]
