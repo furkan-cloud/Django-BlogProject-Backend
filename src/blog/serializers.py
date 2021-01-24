@@ -2,6 +2,9 @@ from rest_framework import serializers
 from .models import Post, Comment
 
 class PostSerializer(serializers.ModelSerializer):
+    # author = serializers.CharField()
+    author = serializers.StringRelatedField()
+    category = serializers.SerializerMethodField()
     class Meta:
         model = Post
         fields = (
@@ -12,22 +15,49 @@ class PostSerializer(serializers.ModelSerializer):
             "image",
             "author",
             "category",
-            # "comment_count",
-            # "like_count",
-            # "postview_count"
+            "comment_count",
+            "like_count",
+            "postview_count",
+            "slug"
         )
 
+    def get_category(self, obj):
+        return obj.category.name
+
+# class CommentSerializer(serializers.ModelSerializer):
+#     user = serializers.CharField( source="user.username", read_only=True)
+#     post = serializers.SerializerMethodField()
+#     # user = serializers.CharField()
+#     # content = serializers.CharField()
+#     class Meta:
+#         model = Comment
+#         fields = (
+#             "content",
+#             "user",
+#             "post_id",
+#             "time_stamp"
+#         )
 class CommentSerializer(serializers.ModelSerializer):
-    # content = serializers.CharField()
+    # url = serializers.HyperlinkedIdentityField(
+    #     view_name='commentcreate',
+    #     # lookup_field='slug'
+    # )
+    user = serializers.CharField( source="user.username", read_only=True)
+    post = serializers.SerializerMethodField()
+
     class Meta:
         model = Comment
-        fields = (
-            "content",
+        fields = [            "content",
             "user",
             "post",
-            "time_stamp"
-        )
-    
+            "time_stamp"]
+
+    def get_post(self, obj):
+        return obj.post.id
+
+    # def getPost(self,obj, request):
+    #     return obj.post.objects.all()
+
     # def create(self, validated_data):
     #     content = serializers.CharField()
     #     # content = validated_data["content"]
@@ -40,6 +70,8 @@ class CommentSerializer(serializers.ModelSerializer):
 class PostDetailSerializer(serializers.ModelSerializer):
     comments = CommentSerializer(many=True)
     owner = serializers.SerializerMethodField(read_only=True)
+    author = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
     class Meta:
         model = Post
         fields = (
@@ -54,7 +86,8 @@ class PostDetailSerializer(serializers.ModelSerializer):
             "comment_count",
             "like_count",
             "postview_count",
-            "owner"
+            "owner",
+            "slug"
         )
         # depth = 1
 
@@ -71,8 +104,6 @@ class PostCreateSerializer(serializers.ModelSerializer):
         fields = (
             "title",
             "description",
-            # "created_date",
-            # "updated_date",
             "image",
             "author",
             "category",
@@ -80,6 +111,8 @@ class PostCreateSerializer(serializers.ModelSerializer):
         )
 
 class PostUpdateDeleteSerializer(serializers.ModelSerializer):
+    author = serializers.StringRelatedField()
+    category = serializers.StringRelatedField()
     
     class Meta:
         model = Post
