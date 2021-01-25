@@ -91,11 +91,38 @@ def CommentCreate(request, slug):
 
 
 
-class LikeView(generics.RetrieveAPIView):
-    serializer_class = PostSerializer
-    queryset = Like.objects.all()
+# class LikeView(generics.RetrieveAPIView):
+#     serializer_class = PostSerializer
+#     queryset = Like.objects.all()
 
 class PostViewSeen(generics.RetrieveAPIView):
     serializer_class = PostSerializer
     queryset = PostView.objects.all()
+
+# def PostViewSeen(request, slug):
+#     post = get_object_or_404(Post, slug=slug)
+#     postview = Post.objects.filter(post=post)
+
+
+
+
+
+# @login_required()
+@api_view(["POST"])
+def LikeView(request, slug):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, slug=slug)
+        like_qs = Like.objects.filter(user=request.user, post=post)
+        if like_qs.exists():
+            like_qs[0].delete()
+            data = {
+                "message": "Like deleted!"
+            }
+            return Response(data, status=status.HTTP_204_NO_CONTENT)
+        else:
+            Like.objects.create(user=request.user, post=post)
+            data = {
+                "message": "Liked!"
+            }
+            return Response(data, status=status.HTTP_201_CREATED)
 
