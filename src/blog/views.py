@@ -95,14 +95,27 @@ def CommentCreate(request, slug):
 #     serializer_class = PostSerializer
 #     queryset = Like.objects.all()
 
-class PostViewSeen(generics.RetrieveAPIView):
-    serializer_class = PostSerializer
-    queryset = PostView.objects.all()
+# class PostViewSeen(generics.RetrieveAPIView):
+#     serializer_class = PostSerializer
+#     queryset = PostView.objects.all()
+#     lookup_field = "slug"
 
-# def PostViewSeen(request, slug):
-#     post = get_object_or_404(Post, slug=slug)
-#     postview = Post.objects.filter(post=post)
+#     def get_queryset(self):
+#         queryset = Post.objects.all()
+#         slug = self.kwargs["slug"]
+#         queryset = queryset.filter(slug = slug)
+#         return queryset
 
+@api_view(["GET"])
+def PostViewSeen(request, slug):
+    post = get_object_or_404(Post, slug=slug)
+    postview = PostView.objects.filter(post=post)
+    PostView.objects.create(user=request.user, post=post)
+    data = {
+        "message": "seen"
+    }
+    return Response(data, status=status.HTTP_201_CREATED)
+    # return postview.count() + 1
 
 
 
